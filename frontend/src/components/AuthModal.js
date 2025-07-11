@@ -56,40 +56,42 @@ const AuthModal = ({ isOpen, onClose, type }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  
+  if (!validateForm()) return;
+  
+  setIsLoading(true);
+  
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     
-    if (!validateForm()) return;
-    
-    setIsLoading(true);
-    
-    try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    if (authType === 'signup') {
+      // Remove the unused response variable
+      await axios.post(`${apiUrl}/api/auth/signup`, {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
       
-      if (authType === 'signup') {
-        const response = await axios.post(`${apiUrl}/api/auth/signup`, {
-          username: formData.username,
-          email: formData.email,
-          password: formData.password
-        });
-        
-        setSuccessMessage('Account created successfully!');
-        setFormData({
-          username: '',
-          email: '',
-          password: '',
-          confirmPassword: ''
-        });
-        
-        // Switch to login after successful signup
-        setTimeout(() => {
-          setAuthType('login');
-          setSuccessMessage('');
-        }, 3000);
-      } else {
-        const response = await axios.post(`${apiUrl}/api/auth/login`, {
-          email: formData.email,
-          password: formData.password
-        });
+      setSuccessMessage('Account created successfully!');
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      });
+      
+      // Switch to login after successful signup
+      setTimeout(() => {
+        setAuthType('login');
+        setSuccessMessage('');
+      }, 3000);
+    } else {
+      // Keep the response variable for login as it's being used
+      const response = await axios.post(`${apiUrl}/api/auth/login`, {
+        email: formData.email,
+        password: formData.password
+      });
         
         // Store user data and token in localStorage
         localStorage.setItem('user', JSON.stringify(response.data.user));
