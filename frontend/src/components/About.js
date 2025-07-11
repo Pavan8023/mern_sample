@@ -22,7 +22,7 @@ const About = () => {
             
             <div className="space-y-8">
               <div className="flex items-start">
-                <div className="bg-primary rounded-full p-3 mr-4">
+                <div className="bg-blue-800 rounded-full p-3 mr-4">
                   <FaUserGraduate className="text-white text-2xl" />
                 </div>
                 <div>
@@ -36,7 +36,7 @@ const About = () => {
               </div>
               
               <div className="flex items-start">
-                <div className="bg-primary rounded-full p-3 mr-4">
+                <div className="bg-blue-800 rounded-full p-3 mr-4">
                   <FaBuilding className="text-white text-2xl" />
                 </div>
                 <div>

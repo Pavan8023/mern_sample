@@ -30,6 +30,8 @@ const AuthModal = ({ isOpen, onClose, type }) => {
     if (authType === 'signup') {
       if (!formData.username.trim()) {
         newErrors.username = 'Username is required';
+      } else if (formData.username.length < 3) {
+        newErrors.username = 'Username must be at least 3 characters';
       }
     }
     
@@ -150,7 +152,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
                   value={formData.username}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-md ${
-                    errors.username ? 'border-red-500' : 'border-gray-300 focus:border-primary'
+                    errors.username ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
                   }`}
                   placeholder="Choose a username"
                 />
@@ -166,7 +168,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
                 value={formData.email}
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-md ${
-                  errors.email ? 'border-red-500' : 'border-gray-300 focus:border-primary'
+                  errors.email ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
                 }`}
                 placeholder="your@email.com"
               />
@@ -181,7 +183,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
                 value={formData.password}
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-md ${
-                  errors.password ? 'border-red-500' : 'border-gray-300 focus:border-primary'
+                  errors.password ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
                 }`}
                 placeholder="At least 6 characters"
               />
@@ -197,7 +199,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-md ${
-                    errors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-primary'
+                    errors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
                   }`}
                   placeholder="Confirm your password"
                 />
@@ -208,7 +210,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-secondary transition-colors ${
+              className={`w-full bg-blue-800 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors ${
                 isLoading ? 'opacity-75 cursor-not-allowed' : ''
               }`}
             >
@@ -221,7 +223,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
           <div className="mt-4 text-center">
             <button
               onClick={() => setAuthType(authType === 'signup' ? 'login' : 'signup')}
-              className="text-primary hover:underline"
+              className="text-blue-800 hover:underline"
             >
               {authType === 'signup' 
                 ? 'Already have an account? Login' 

@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HiMenu, HiX } from 'react-icons/hi';
 
-const Navbar = () => {
+const Navbar = ({ onAuthOpen }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authType, setAuthType] = useState('login');
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -22,7 +20,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-primary">
+            <Link to="/" className="text-2xl font-bold text-blue-800">
               Psyche Panacea
             </Link>
           </div>
@@ -33,17 +31,14 @@ const Navbar = () => {
               <Link 
                 key={item.name} 
                 to={item.path}
-                className="text-gray-700 hover:text-primary transition-colors"
+                className="text-gray-700 hover:text-blue-800 transition-colors"
               >
                 {item.name}
               </Link>
             ))}
             <button 
-              onClick={() => {
-                setAuthType('signup');
-                setAuthModalOpen(true);
-              }}
-              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary transition-colors"
+              onClick={() => onAuthOpen('signup')}
+              className="bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
             >
               Get Started
             </button>
@@ -53,7 +48,7 @@ const Navbar = () => {
           <div className="md:hidden flex items-center">
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-primary"
+              className="text-gray-700 hover:text-blue-800"
             >
               {isMenuOpen ? <HiX size={24} /> : <HiMenu size={24} />}
             </button>
@@ -69,7 +64,7 @@ const Navbar = () => {
               <Link 
                 key={item.name} 
                 to={item.path}
-                className="block px-3 py-2 text-gray-700 hover:text-primary hover:bg-gray-50"
+                className="block px-3 py-2 text-gray-700 hover:text-blue-800 hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
@@ -77,11 +72,10 @@ const Navbar = () => {
             ))}
             <button 
               onClick={() => {
-                setAuthType('signup');
-                setAuthModalOpen(true);
+                onAuthOpen('signup');
                 setIsMenuOpen(false);
               }}
-              className="block w-full text-left px-3 py-2 bg-primary text-white rounded-md"
+              className="block w-full text-left px-3 py-2 bg-blue-800 text-white rounded-md"
             >
               Get Started
             </button>

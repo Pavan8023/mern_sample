@@ -10,7 +10,7 @@ const Experience = () => {
   ];
 
   return (
-    <section className="py-16 bg-primary text-white">
+    <section className="py-16 bg-blue-800 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Our Experience</h2>
@@ -38,7 +38,7 @@ const Experience = () => {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-4 mb-6">
             <div 
-              className="bg-accent h-4 rounded-full" 
+              className="bg-yellow-500 h-4 rounded-full" 
               style={{ width: '85%' }}
             ></div>
           </div>
