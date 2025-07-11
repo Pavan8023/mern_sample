@@ -7,6 +7,11 @@ router.post('/submit', async (req, res) => {
   try {
     const { firstName, lastName, email, phone, service, message } = req.body;
     
+    // Validate required fields
+    if (!firstName || !email || !phone || !service || !message) {
+      return res.status(400).json({ message: 'Required fields are missing' });
+    }
+
     const newContact = new Contact({
       firstName,
       lastName,

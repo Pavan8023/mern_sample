@@ -8,10 +8,19 @@ router.post('/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
+    // Validate input
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
     // Check if user exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(409).json({ 
+        message: existingUser.email === email 
+          ? 'Email already exists' 
+          : 'Username already exists'
+      });
     }
 
     // Hash password
