@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import About from '../components/About';
@@ -6,27 +6,13 @@ import Services from '../components/Services';
 import Experience from '../components/Experience';
 import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
-import AuthModal from '../components/AuthModal';
 
-const Home = () => {
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authType, setAuthType] = useState('login');
-
+const Home = ({ onAuthOpen }) => {
   return (
     <div className="min-h-screen bg-white">
-      <Navbar 
-        onAuthOpen={(type) => {
-          setAuthType(type);
-          setAuthModalOpen(true);
-        }} 
-      />
+      <Navbar onAuthOpen={onAuthOpen} />
       
-      <Hero 
-        onGetStarted={() => {
-          setAuthType('signup');
-          setAuthModalOpen(true);
-        }}
-      />
+      <Hero onGetStarted={() => onAuthOpen('signup')} />
       
       <About />
       <Experience />
@@ -72,12 +58,6 @@ const Home = () => {
       </section>
       
       <Footer />
-      
-      <AuthModal 
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        type={authType}
-      />
     </div>
   );
 };

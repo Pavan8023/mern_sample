@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-const ServicesPage = () => {
+const ServicesPage = ({ onAuthOpen }) => {
   const services = [
     {
       title: "Result-Oriented Trainings",
@@ -32,7 +32,7 @@ const ServicesPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
+      <Navbar onAuthOpen={onAuthOpen} />
       
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-800 to-blue-600 text-white pt-32 pb-24">

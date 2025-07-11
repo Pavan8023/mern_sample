@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import Experience from '../components/Experience';
 import Footer from '../components/Footer';
 
-const AboutPage = () => {
+const AboutPage = ({ onAuthOpen }) => {
   const clients = [
     { name: "BSES", description: "BSES Yamuna Power Limited" },
     { name: "COIGATE" },
@@ -14,7 +14,7 @@ const AboutPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
+      <Navbar onAuthOpen={onAuthOpen} />
       
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-800 to-blue-600 text-white pt-32 pb-24">

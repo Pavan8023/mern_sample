@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { HiX } from 'react-icons/hi';
 
 const AuthModal = ({ isOpen, onClose, type }) => {
   const [authType, setAuthType] = useState(type || 'login');
@@ -63,7 +62,6 @@ const AuthModal = ({ isOpen, onClose, type }) => {
     setIsLoading(true);
     
     try {
-      // Use environment variable for API URL
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       
       if (authType === 'signup') {
@@ -74,7 +72,6 @@ const AuthModal = ({ isOpen, onClose, type }) => {
         });
         
         setSuccessMessage('Account created successfully!');
-        // Reset form
         setFormData({
           username: '',
           email: '',
@@ -93,7 +90,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
           password: formData.password
         });
         
-        // Handle successful login (store token, redirect, etc.)
+        // Handle successful login
         console.log('Login successful:', response.data);
         setSuccessMessage('Login successful! Redirecting...');
         
@@ -122,7 +119,9 @@ const AuthModal = ({ isOpen, onClose, type }) => {
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
         >
-          <HiX size={24} />
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
         
         <div className="p-6">
