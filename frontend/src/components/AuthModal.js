@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AuthModal = ({ isOpen, onClose, type }) => {
   const [authType, setAuthType] = useState(type || 'login');
@@ -12,12 +13,12 @@ const AuthModal = ({ isOpen, onClose, type }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -90,15 +91,17 @@ const AuthModal = ({ isOpen, onClose, type }) => {
           password: formData.password
         });
         
-        // Handle successful login
-        console.log('Login successful:', response.data);
-        setSuccessMessage('Login successful! Redirecting...');
+        // Store user data and token in localStorage
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        localStorage.setItem('token', response.data.token);
         
-        // Close modal after successful login
+        setSuccessMessage('Login successful! Redirecting to dashboard...');
+        
+        // Close modal and redirect to dashboard after delay
         setTimeout(() => {
           onClose();
-          setSuccessMessage('');
-        }, 2000);
+          navigate('/dashboard');
+        }, 1500);
       }
     } catch (error) {
       console.error('Authentication error:', error);
@@ -167,8 +170,8 @@ const AuthModal = ({ isOpen, onClose, type }) => {
                 value={formData.email}
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-md ${
-                  errors.email ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
-                }`}
+                    errors.email ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
+                  }`}
                 placeholder="your@email.com"
               />
               {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -182,8 +185,8 @@ const AuthModal = ({ isOpen, onClose, type }) => {
                 value={formData.password}
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border rounded-md ${
-                  errors.password ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
-                }`}
+                    errors.password ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
+                  }`}
                 placeholder="At least 6 characters"
               />
               {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}

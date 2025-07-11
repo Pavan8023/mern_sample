@@ -6,6 +6,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import Dashboard from './pages/Dashboard';
 import AuthModal from './components/AuthModal';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -23,7 +24,11 @@ function App() {
         <Route path="/services" element={<ServicesPage onAuthOpen={handleAuthOpen} />} />
         <Route path="/about" element={<AboutPage onAuthOpen={handleAuthOpen} />} />
         <Route path="/contact" element={<ContactPage onAuthOpen={handleAuthOpen} />} />
-        <Route path="/dashboard" element={<Dashboard onAuthOpen={handleAuthOpen} />} />
+        
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
       </Routes>
       
       <AuthModal 
