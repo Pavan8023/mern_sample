@@ -16,13 +16,13 @@ const Hero = ({ onGetStarted }) => {
               Served 350+ Clients Since 2001
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a 
-                href="tel:09810319292" 
+              <a
+                href="tel:09810319292"
                 className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-8 rounded-lg text-center transition-colors"
               >
                 Call Us 😊
               </a>
-              <button 
+              <button
                 onClick={onGetStarted}
                 className="bg-white hover:bg-gray-100 text-blue-800 font-medium py-3 px-8 rounded-lg transition-colors"
               >
@@ -31,7 +31,13 @@ const Hero = ({ onGetStarted }) => {
             </div>
           </div>
           <div className="flex justify-center">
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-64 md:h-96" />
+            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-64 md:h-96 overflow-hidden">
+              <img
+                src="https://www.psypanconsulting.com/wp-content/uploads/2021/11/service7.jpg"
+                alt="Service"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </div>

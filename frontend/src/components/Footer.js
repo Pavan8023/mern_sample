@@ -48,9 +48,9 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
             <address className="text-gray-400 not-italic">
-              <p className="mb-2">123 Training Center, New Delhi</p>
-              <p className="mb-2">Phone: 09810319292</p>
-              <p className="mb-2">Email: hr@programconsulting.com</p>
+              <p className="mb-2">Address : Psyche Panacea, 308/2, Near Country inn Hotel, Sector 12 A, Gurgaon</p>
+              <p className="mb-2">Contact no. : 09810323292 , 09810319292</p>
+              <p className="mb-2">Email id : hr@psypanconsulting.com</p>
             </address>
           </div>
         </div>

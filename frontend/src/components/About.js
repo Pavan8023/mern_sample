@@ -55,7 +55,13 @@ const About = () => {
           </div>
           
           <div className="flex justify-center">
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-64 md:h-96" />
+            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-64 md:h-96 overflow-hidden">
+              <img
+                src="https://www.psypanconsulting.com/wp-content/uploads/2021/11/blog4.jpg"
+                alt="Service"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </div>
