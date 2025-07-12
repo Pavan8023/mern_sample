@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,20 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setFormData({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      });
+      setErrors({});
+      setSuccessMessage('');
+    }
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -83,6 +97,7 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
           navigate('/dashboard');
         }, 1500);
       } else {
+        // LOGIN PROCESS
         const response = await axios.post(`${apiUrl}/api/auth/login`, {
           email: formData.email,
           password: formData.password
@@ -250,7 +265,10 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
           
           <div className="mt-4 text-center">
             <button
-              onClick={() => setMode(mode === 'signup' ? 'login' : 'signup')}
+              onClick={() => {
+                setMode(mode === 'signup' ? 'login' : 'signup');
+                setErrors({});
+              }}
               className="text-blue-800 hover:underline"
             >
               {mode === 'signup' 
