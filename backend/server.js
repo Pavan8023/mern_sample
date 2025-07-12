@@ -7,22 +7,25 @@ const contactRoutes = require('./routes/contact');
 
 const app = express();
 
-// Middleware
+// Enhanced CORS configuration
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://bydefault05.netlify.app' // Replace with your Netlify URL
+    'https://default05.netlify.app' // Corrected your Netlify URL
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   optionsSuccessStatus: 200
 }));
+
 app.use(express.json());
 
-// MongoDB Connection
+// MongoDB Connection with improved settings
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000
 })
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => {
@@ -33,6 +36,14 @@ mongoose.connect(process.env.MONGO_URI, {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/contact', contactRoutes);
+
+// Health check route
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok',
+    dbState: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
+});
 
 // Test route
 app.get('/', (req, res) => {
