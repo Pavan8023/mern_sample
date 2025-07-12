@@ -104,17 +104,28 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
       console.error('Authentication error:', error);
       
       let errorMessage = mode === 'signup' ? 'Signup failed' : 'Login failed';
+      let specificError = '';
       
       if (error.response) {
+        // Handle specific error messages from backend
+        if (error.response.data && error.response.data.message) {
+          specificError = error.response.data.message;
+        }
+        
+        // Handle 400 errors (validation)
         if (error.response.status === 400) {
-          errorMessage = 'Invalid credentials';
-        } else if (error.response.status === 409) {
-          errorMessage = 'Email already exists';
-        } else {
-          errorMessage = error.response.data.message || errorMessage;
+          errorMessage = specificError || 'Invalid credentials';
+        } 
+        // Handle 409 (conflict - user exists)
+        else if (error.response.status === 409) {
+          errorMessage = specificError || 'User already exists';
         }
       } else if (error.request) {
-        errorMessage = 'No response from server. Please try again later.';
+        // The request was made but no response was received
+        errorMessage = 'No response from server. Please check your connection.';
+      } else {
+        // Something happened in setting up the request
+        errorMessage = error.message || 'Request setup error';
       }
       
       setErrors({ submit: errorMessage });

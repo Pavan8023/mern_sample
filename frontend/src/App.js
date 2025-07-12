@@ -4,8 +4,6 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import ProtectedRoute from './components/ProtectedRoute';
-
-
 import Chatbot from './pages/Chatbot';
 
 // Pages
@@ -20,7 +18,7 @@ import Dashboard from './pages/Dashboard';
 
 function App() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // Default to login
+  const [authMode, setAuthMode] = useState('login');
 
   const handleAuthOpen = (mode) => {
     setAuthMode(mode);
@@ -47,10 +45,11 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             
-            {/* Protected routes */}
+            {/* Protected route */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
+            
           </Routes>
         </main>
         <Footer />

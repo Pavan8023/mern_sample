@@ -4,7 +4,12 @@ import { Navigate, Outlet } from 'react-router-dom';
 const ProtectedRoute = () => {
   const token = localStorage.getItem('token');
   
-  return token ? <Outlet /> : <Navigate to="/" replace />;
+  if (!token) {
+    // Redirect to home page if not authenticated
+    return <Navigate to="/" replace />;
+  }
+  
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

@@ -1,4 +1,5 @@
 require('dotenv').config({ path: __dirname + '/.env' });
+
 console.log('Environment Variables:');
 console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set!');
 console.log('MONGO_URI:', process.env.MONGO_URI ? 'Set' : 'Not set!');
@@ -23,10 +24,12 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// MongoDB Connection
+// MongoDB Connection with improved settings
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000
 })
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => {
@@ -43,10 +46,11 @@ app.get('/', (req, res) => {
   res.send('Psyche Panacea Backend is running');
 });
 
-// Health check
+// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
+    dbState: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
     jwtSecret: process.env.JWT_SECRET ? 'set' : 'missing'
   });
 });
