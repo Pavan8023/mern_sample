@@ -13,7 +13,7 @@ router.post('/login', async (req, res) => {
     const normalizedEmail = email.toLowerCase().trim();
 
     // 2. Find user by normalized email
-    const user = await User.findOne({ email: normalizedEmail });
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
     if (!user) {
       console.log(`Login attempt for non-existent email: ${normalizedEmail}`);
       return res.status(400).json({ message: 'Invalid credentials' });
@@ -26,16 +26,20 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // 4. Create JWT token with extended expiration
+    // 4. Create JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' } // Extended expiration
+      { expiresIn: '24h' }
     );
 
-    // 5. Return user data without password
-    const userData = user.toObject();
-    delete userData.password;
+    // 5. Prepare user data without password
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt
+    };
 
     res.status(200).json({ 
       token, 
@@ -52,7 +56,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Signup route for completeness
+// Signup route
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -65,15 +69,14 @@ router.post('/signup', async (req, res) => {
     }
 
     // Create user with hashed password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
     user = new User({
       name,
       email: normalizedEmail,
-      password
+      password: hashedPassword
     });
-
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
 
     await user.save();
 
@@ -85,8 +88,12 @@ router.post('/signup', async (req, res) => {
     );
 
     // Return user without password
-    const userData = user.toObject();
-    delete userData.password;
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt
+    };
 
     res.status(201).json({
       token,
