@@ -11,7 +11,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://your-netlify-app.netlify.app' // Replace with your Netlify URL
+    'https://bydefault05.netlify.app' // Replace with your Netlify URL
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
