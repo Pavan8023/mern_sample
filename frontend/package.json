@@ -24,7 +24,7 @@
     "eject": "react-scripts eject"
   },
   "engines": {
-  "node": "18.20.2"
+  "node": ">=20.0.0"
 }
 ,
   "eslintConfig": {
