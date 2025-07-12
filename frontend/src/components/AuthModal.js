@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const AuthModal = ({ isOpen, onClose, type }) => {
-  const [authType, setAuthType] = useState(type || 'login');
+const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -13,7 +13,6 @@ const AuthModal = ({ isOpen, onClose, type }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,11 +26,11 @@ const AuthModal = ({ isOpen, onClose, type }) => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (authType === 'signup') {
-      if (!formData.username.trim()) {
-        newErrors.username = 'Username is required';
-      } else if (formData.username.length < 3) {
-        newErrors.username = 'Username must be at least 3 characters';
+    if (mode === 'signup') {
+      if (!formData.name.trim()) {
+        newErrors.name = 'Full name is required';
+      } else if (formData.name.length < 3) {
+        newErrors.name = 'Name must be at least 3 characters';
       }
     }
     
@@ -47,7 +46,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
       newErrors.password = 'Password must be at least 6 characters';
     }
     
-    if (authType === 'signup' && formData.password !== formData.confirmPassword) {
+    if (mode === 'signup' && formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
     
@@ -56,42 +55,38 @@ const AuthModal = ({ isOpen, onClose, type }) => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (!validateForm()) return;
-  
-  setIsLoading(true);
-  
-  try {
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    e.preventDefault();
     
-    if (authType === 'signup') {
-      // Remove the unused response variable
-      await axios.post(`${apiUrl}/api/auth/signup`, {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password
-      });
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
+    
+    try {
+      const apiUrl = process.env.REACT_APP_API_URL || 'https://mern-sample-uw4k.onrender.com';
       
-      setSuccessMessage('Account created successfully!');
-      setFormData({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      });
-      
-      // Switch to login after successful signup
-      setTimeout(() => {
-        setAuthType('login');
-        setSuccessMessage('');
-      }, 3000);
-    } else {
-      // Keep the response variable for login as it's being used
-      const response = await axios.post(`${apiUrl}/api/auth/login`, {
-        email: formData.email,
-        password: formData.password
-      });
+      if (mode === 'signup') {
+        const response = await axios.post(`${apiUrl}/api/auth/signup`, {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        });
+        
+        // Store user data and token in localStorage
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        localStorage.setItem('token', response.data.token);
+        
+        setSuccessMessage('Account created successfully! Redirecting to dashboard...');
+        
+        // Close modal and redirect to dashboard after delay
+        setTimeout(() => {
+          onClose();
+          navigate('/dashboard');
+        }, 1500);
+      } else {
+        const response = await axios.post(`${apiUrl}/api/auth/login`, {
+          email: formData.email,
+          password: formData.password
+        });
         
         // Store user data and token in localStorage
         localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -107,8 +102,21 @@ const AuthModal = ({ isOpen, onClose, type }) => {
       }
     } catch (error) {
       console.error('Authentication error:', error);
-      const errorMessage = error.response?.data?.message || 
-        (authType === 'signup' ? 'Signup failed' : 'Login failed');
+      
+      let errorMessage = mode === 'signup' ? 'Signup failed' : 'Login failed';
+      
+      if (error.response) {
+        if (error.response.status === 400) {
+          errorMessage = 'Invalid credentials';
+        } else if (error.response.status === 409) {
+          errorMessage = 'Email already exists';
+        } else {
+          errorMessage = error.response.data.message || errorMessage;
+        }
+      } else if (error.request) {
+        errorMessage = 'No response from server. Please try again later.';
+      }
+      
       setErrors({ submit: errorMessage });
     } finally {
       setIsLoading(false);
@@ -131,7 +139,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
         
         <div className="p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            {authType === 'signup' ? 'Create Account' : 'Login to Your Account'}
+            {mode === 'signup' ? 'Create Account' : 'Login to Your Account'}
           </h2>
           
           {successMessage && (
@@ -147,20 +155,20 @@ const AuthModal = ({ isOpen, onClose, type }) => {
           )}
           
           <form onSubmit={handleSubmit}>
-            {authType === 'signup' && (
+            {mode === 'signup' && (
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Username *</label>
+                <label className="block text-gray-700 mb-2">Full Name *</label>
                 <input
                   type="text"
-                  name="username"
-                  value={formData.username}
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-md ${
-                    errors.username ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
+                    errors.name ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
                   }`}
-                  placeholder="Choose a username"
+                  placeholder="Enter your full name"
                 />
-                {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
               </div>
             )}
             
@@ -194,7 +202,7 @@ const AuthModal = ({ isOpen, onClose, type }) => {
               {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
             </div>
             
-            {authType === 'signup' && (
+            {mode === 'signup' && (
               <div className="mb-6">
                 <label className="block text-gray-700 mb-2">Confirm Password *</label>
                 <input
@@ -218,18 +226,23 @@ const AuthModal = ({ isOpen, onClose, type }) => {
                 isLoading ? 'opacity-75 cursor-not-allowed' : ''
               }`}
             >
-              {isLoading 
-                ? (authType === 'signup' ? 'Creating Account...' : 'Logging in...') 
-                : (authType === 'signup' ? 'Create Account' : 'Login')}
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+                  {mode === 'signup' ? 'Creating Account...' : 'Logging in...'}
+                </span>
+              ) : (
+                mode === 'signup' ? 'Create Account' : 'Login'
+              )}
             </button>
           </form>
           
           <div className="mt-4 text-center">
             <button
-              onClick={() => setAuthType(authType === 'signup' ? 'login' : 'signup')}
+              onClick={() => setMode(mode === 'signup' ? 'login' : 'signup')}
               className="text-blue-800 hover:underline"
             >
-              {authType === 'signup' 
+              {mode === 'signup' 
                 ? 'Already have an account? Login' 
                 : "Don't have an account? Sign up"}
             </button>

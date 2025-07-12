@@ -1,13 +1,10 @@
-// src/App.js
-import Chatbot from './pages/Chatbot';
-
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import Chatbot from './components/Chatbot';
 
 // Pages
 import Home from './pages/Home';
@@ -21,7 +18,7 @@ import Dashboard from './pages/Dashboard';
 
 function App() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('signup'); // 'signup' or 'login'
+  const [authMode, setAuthMode] = useState('login'); // Default to login
 
   const handleAuthOpen = (mode) => {
     setAuthMode(mode);
@@ -40,14 +37,15 @@ function App() {
         />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Home onAuthOpen={handleAuthOpen} />} />
-            <Route path="/services" element={<ServicesPage onAuthOpen={handleAuthOpen} />} />
-            <Route path="/programs" element={<Programs onAuthOpen={handleAuthOpen} />} />
-            <Route path="/events" element={<Events onAuthOpen={handleAuthOpen} />} />
-            <Route path="/gallery" element={<Gallery onAuthOpen={handleAuthOpen} />} />
-            <Route path="/about" element={<AboutPage onAuthOpen={handleAuthOpen} />} />
-            <Route path="/contact" element={<ContactPage onAuthOpen={handleAuthOpen} />} />
-
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/programs" element={<Programs />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            
+            {/* Protected routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>

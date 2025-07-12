@@ -1,5 +1,4 @@
-require('dotenv').config({ path: './.env' }); // Add explicit path
-
+require('dotenv').config({ path: __dirname + '/.env' });
 console.log('Environment Variables:');
 console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set!');
 console.log('MONGO_URI:', process.env.MONGO_URI ? 'Set' : 'Not set!');
@@ -42,6 +41,14 @@ app.use('/api/contact', contactRoutes);
 // Test route
 app.get('/', (req, res) => {
   res.send('Psyche Panacea Backend is running');
+});
+
+// Health check
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    jwtSecret: process.env.JWT_SECRET ? 'set' : 'missing'
+  });
 });
 
 // Error handling middleware

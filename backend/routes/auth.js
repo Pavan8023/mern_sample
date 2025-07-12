@@ -4,36 +4,34 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Login route with enhanced error handling
+// Validate JWT_SECRET exists
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL ERROR: JWT_SECRET is not defined.');
+  throw new Error('JWT_SECRET missing');
+}
+
+// Login route
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // 1. Normalize email to lowercase
     const normalizedEmail = email.toLowerCase().trim();
 
-    // 2. Find user by normalized email
     const user = await User.findOne({ email: normalizedEmail }).select('+password');
     if (!user) {
-      console.log(`Login attempt for non-existent email: ${normalizedEmail}`);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // 3. Compare passwords with bcrypt
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      console.log(`Password mismatch for user: ${user.email}`);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // 4. Create JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    // 5. Prepare user data without password
     const userData = {
       _id: user._id,
       name: user.name,
@@ -62,13 +60,11 @@ router.post('/signup', async (req, res) => {
     const { name, email, password } = req.body;
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Check if user exists
     let user = await User.findOne({ email: normalizedEmail });
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Create user with hashed password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     
@@ -80,14 +76,12 @@ router.post('/signup', async (req, res) => {
 
     await user.save();
 
-    // Create token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    // Return user without password
     const userData = {
       _id: user._id,
       name: user.name,

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const SignupForm = () => {
+const SignupForm = ({ switchToLogin }) => {
   const [formData, setFormData] = useState({
-    name: '',  // Changed from username to name
+    name: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -11,10 +12,10 @@ const SignupForm = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Clear error when user types
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: '' });
     }
@@ -24,9 +25,9 @@ const SignupForm = () => {
     const newErrors = {};
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';  // Updated from username to name
+      newErrors.name = 'Name is required';
     } else if (formData.name.length < 3) {
-      newErrors.name = 'Name must be at least 3 characters';  // Updated from username to name
+      newErrors.name = 'Name must be at least 3 characters';
     }
     
     if (!formData.email.trim()) {
@@ -57,27 +58,32 @@ const SignupForm = () => {
     try {
       setIsLoading(true);
       
-      // Use environment variable for API URL
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const apiUrl = process.env.REACT_APP_API_URL || 'https://mern-sample-uw4k.onrender.com';
       
       const response = await axios.post(
         `${apiUrl}/api/auth/signup`,
         {
-          name: formData.name,  // Changed from username to name
+          name: formData.name,
           email: formData.email,
           password: formData.password
         }
       );
 
-      setSuccessMessage('Account created successfully!');
-      setFormData({ name: '', email: '', password: '', confirmPassword: '' });
-      setErrors({});
+      // Save token and user to localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      setSuccessMessage('Account created successfully! Redirecting...');
+      
+      // Redirect to dashboard after 2 seconds
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
       
     } catch (error) {
       let errorMessage = 'Signup failed. Please try again.';
       
       if (error.response) {
-        // Handle different error statuses
         if (error.response.status === 400) {
           errorMessage = error.response.data.message || 'Validation error';
         } else if (error.response.status === 409) {
@@ -110,10 +116,10 @@ const SignupForm = () => {
           )}
           
           <div>
-            <label className="block text-gray-700 mb-2">Full Name</label>  {/* Changed from Username */}
+            <label className="block text-gray-700 mb-2">Full Name</label>
             <input
               type="text"
-              name="name"  // Changed from username to name
+              name="name"
               value={formData.name}
               onChange={handleChange}
               className={`w-full p-3 border rounded-lg ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
@@ -184,7 +190,7 @@ const SignupForm = () => {
               <button 
                 type="button"
                 className="text-blue-600 hover:underline font-medium"
-                onClick={() => window.location.reload()} // Or implement a proper login switch
+                onClick={switchToLogin}
               >
                 Log in
               </button>
