@@ -6,6 +6,8 @@ import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import ProtectedRoute from './components/ProtectedRoute';
 
+import ChatBot from './components/ChatBot'; // Add this
+
 // Pages
 import Home from './pages/Home';
 import ServicesPage from './pages/ServicesPage';
@@ -52,6 +54,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <ChatBot /> {/* Add ChatBot component here */}
       </div>
     </Router>
   );
