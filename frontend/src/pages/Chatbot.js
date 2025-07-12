@@ -11,7 +11,6 @@ const ChatBot = () => {
   });
   const messagesEndRef = useRef(null);
 
-  // Initial bot message when opened
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setMessages([
@@ -26,7 +25,8 @@ const ChatBot = () => {
         }
       ]);
     }
-  }, [isOpen]);
+  }, [isOpen, messages.length]);
+
 
   // Scroll to bottom of messages
   useEffect(() => {
@@ -40,37 +40,37 @@ const ChatBot = () => {
   const handleUserMessage = (text, isButton = false) => {
     const newMessages = [...messages, { text, sender: 'user' }];
     setMessages(newMessages);
-    
+
     // Process user input
     setTimeout(() => handleBotResponse(text, isButton), 500);
   };
 
   const handleBotResponse = (userInput, isButton) => {
     let botResponse = {};
-    
+
     if (isButton) {
-      switch(userInput) {
+      switch (userInput) {
         case 'Learn about services':
           botResponse = {
             text: "We offer corporate training in leadership development, team building, and organizational psychology. Which area interests you?",
             buttons: ['Leadership', 'Team Building', 'Organizational Psychology']
           };
           break;
-          
+
         case 'Schedule consultation':
           botResponse = {
             text: "Great! Please provide your name and email so we can contact you:",
             inputFields: ['name', 'email']
           };
           break;
-          
+
         case 'Get program details':
           botResponse = {
             text: "Which program would you like information about?",
             buttons: ['Leadership Excellence', 'Team Dynamics', 'Strategic Thinking']
           };
           break;
-          
+
         default:
           botResponse = {
             text: "Thank you for your interest! How else can I assist you?",
@@ -92,16 +92,16 @@ const ChatBot = () => {
         };
       }
     }
-    
+
     setMessages(prev => [...prev, { ...botResponse, sender: 'bot' }]);
   };
 
   const handleSubmitData = () => {
     console.log('Submitting user data:', userData);
     // In a real app, you would send this to your backend API
-    setMessages(prev => [...prev, { 
-      text: "Thank you! Our team will contact you shortly. Have a great day!", 
-      sender: 'bot' 
+    setMessages(prev => [...prev, {
+      text: "Thank you! Our team will contact you shortly. Have a great day!",
+      sender: 'bot'
     }]);
   };
 
@@ -112,7 +112,7 @@ const ChatBot = () => {
           {/* Chat header */}
           <div className="bg-blue-800 text-white p-3 rounded-t-lg flex justify-between items-center">
             <h3 className="font-bold">Psyche Panacea Assistant</h3>
-            <button 
+            <button
               onClick={() => setIsOpen(false)}
               className="text-white hover:text-gray-200"
             >
@@ -121,19 +121,18 @@ const ChatBot = () => {
               </svg>
             </button>
           </div>
-          
+
           {/* Chat messages */}
           <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
             {messages.map((msg, index) => (
               <div key={index} className={`mb-4 ${msg.sender === 'user' ? 'text-right' : ''}`}>
-                <div className={`inline-block p-3 rounded-lg max-w-xs ${
-                  msg.sender === 'user' 
-                    ? 'bg-blue-600 text-white' 
+                <div className={`inline-block p-3 rounded-lg max-w-xs ${msg.sender === 'user'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-gray-200 text-gray-800'
-                }`}>
+                  }`}>
                   {msg.text}
                 </div>
-                
+
                 {msg.buttons && (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {msg.buttons.map((btn, i) => (
@@ -147,7 +146,7 @@ const ChatBot = () => {
                     ))}
                   </div>
                 )}
-                
+
                 {msg.inputFields && (
                   <div className="mt-3">
                     {msg.inputFields.map((field) => (
@@ -156,9 +155,9 @@ const ChatBot = () => {
                         type={field === 'email' ? 'email' : 'text'}
                         placeholder={`Enter your ${field}`}
                         className="w-full p-2 border rounded text-sm mb-2"
-                        onChange={(e) => setUserData(prev => ({ 
-                          ...prev, 
-                          [field]: e.target.value 
+                        onChange={(e) => setUserData(prev => ({
+                          ...prev,
+                          [field]: e.target.value
                         }))}
                       />
                     ))}
@@ -174,10 +173,10 @@ const ChatBot = () => {
             ))}
             <div ref={messagesEndRef} />
           </div>
-          
+
           {/* Input area */}
           <div className="p-3 border-t">
-            <form 
+            <form
               onSubmit={(e) => {
                 e.preventDefault();
                 const input = e.target.message.value.trim();
@@ -192,7 +191,7 @@ const ChatBot = () => {
                 placeholder="Type your message..."
                 className="flex-1 border rounded-l p-2 text-sm"
               />
-              <button 
+              <button
                 type="submit"
                 className="bg-blue-600 text-white px-4 rounded-r"
               >
@@ -202,7 +201,7 @@ const ChatBot = () => {
           </div>
         </div>
       ) : (
-        <button 
+        <button
           onClick={() => setIsOpen(true)}
           className="bg-blue-800 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center animate-bounce"
         >
