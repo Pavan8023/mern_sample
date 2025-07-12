@@ -1,4 +1,6 @@
 // src/App.js
+import Chatbot from './components/Chatbot';
+
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -6,7 +8,6 @@ import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import ProtectedRoute from './components/ProtectedRoute';
 
-import ChatBot from './components/ChatBot'; // Add this
 
 // Pages
 import Home from './pages/Home';
@@ -31,30 +32,29 @@ function App() {
     <Router>
       <div className="flex flex-col min-h-screen">
         <Navbar onAuthOpen={handleAuthOpen} />
-        <AuthModal 
-          isOpen={authModalOpen} 
-          onClose={() => setAuthModalOpen(false)} 
-          mode={authMode} 
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          mode={authMode}
           setMode={setAuthMode}
         />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/services" element={<ServicesPage />} />
-            <Route path="/programs" element={<Programs />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            
-            {/* Protected Dashboard Route */}
+            <Route path="/" element={<Home onAuthOpen={handleAuthOpen} />} />
+            <Route path="/services" element={<ServicesPage onAuthOpen={handleAuthOpen} />} />
+            <Route path="/programs" element={<Programs onAuthOpen={handleAuthOpen} />} />
+            <Route path="/events" element={<Events onAuthOpen={handleAuthOpen} />} />
+            <Route path="/gallery" element={<Gallery onAuthOpen={handleAuthOpen} />} />
+            <Route path="/about" element={<AboutPage onAuthOpen={handleAuthOpen} />} />
+            <Route path="/contact" element={<ContactPage onAuthOpen={handleAuthOpen} />} />
+
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
           </Routes>
         </main>
         <Footer />
-        <ChatBot /> {/* Add ChatBot component here */}
+        <Chatbot />
       </div>
     </Router>
   );

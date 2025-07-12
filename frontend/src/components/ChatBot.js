@@ -1,146 +1,212 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { text: "Hello! I'm Psyche Panacea's AI assistant. How can I help you today?", sender: 'bot' }
-  ]);
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [userData, setUserData] = useState({
+    name: '',
+    email: '',
+    interest: '',
+    phone: ''
+  });
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to bottom of chat
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // Initial bot message when opened
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      setMessages([
+        {
+          text: "Hello! I'm Psyche Panacea's virtual assistant. How can I help you today?",
+          sender: 'bot',
+          buttons: [
+            'Learn about services',
+            'Schedule consultation',
+            'Get program details'
+          ]
+        }
+      ]);
+    }
+  }, [isOpen]);
 
+  // Scroll to bottom of messages
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!inputValue.trim() || isLoading) return;
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-    // Add user message
-    const userMessage = { text: inputValue, sender: 'user' };
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
-    setIsLoading(true);
+  const handleUserMessage = (text, isButton = false) => {
+    const newMessages = [...messages, { text, sender: 'user' }];
+    setMessages(newMessages);
+    
+    // Process user input
+    setTimeout(() => handleBotResponse(text, isButton), 500);
+  };
 
-    try {
-      // Send to OpenAI API
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [
-            { 
-              role: "system", 
-              content: "You are an AI assistant for Psyche Panacea, a corporate training company. " +
-                       "Provide helpful responses about their services, training programs, and events. " +
-                       "Keep responses professional and concise. " +
-                       "Psyche Panacea website: https://www.psypanconsulting.com/"
-            },
-            { role: "user", content: inputValue }
-          ]
-        })
-      });
-
-      const data = await response.json();
-      const botMessage = data.choices[0].message.content;
-      
-      // Add bot response
-      setMessages(prev => [...prev, { text: botMessage, sender: 'bot' }]);
-    } catch (error) {
-      setMessages(prev => [...prev, { 
-        text: "Sorry, I'm having trouble connecting. Please try again later.", 
-        sender: 'bot' 
-      }]);
-    } finally {
-      setIsLoading(false);
+  const handleBotResponse = (userInput, isButton) => {
+    let botResponse = {};
+    
+    if (isButton) {
+      switch(userInput) {
+        case 'Learn about services':
+          botResponse = {
+            text: "We offer corporate training in leadership development, team building, and organizational psychology. Which area interests you?",
+            buttons: ['Leadership', 'Team Building', 'Organizational Psychology']
+          };
+          break;
+          
+        case 'Schedule consultation':
+          botResponse = {
+            text: "Great! Please provide your name and email so we can contact you:",
+            inputFields: ['name', 'email']
+          };
+          break;
+          
+        case 'Get program details':
+          botResponse = {
+            text: "Which program would you like information about?",
+            buttons: ['Leadership Excellence', 'Team Dynamics', 'Strategic Thinking']
+          };
+          break;
+          
+        default:
+          botResponse = {
+            text: "Thank you for your interest! How else can I assist you?",
+            buttons: ['Contact sales', 'Visit website', 'View testimonials']
+          };
+      }
+    } else {
+      // Handle text input (name, email, etc.)
+      if (userInput.includes('@')) {
+        setUserData(prev => ({ ...prev, email: userInput }));
+        botResponse = {
+          text: `Thank you ${userData.name || ''}! We'll contact you at ${userInput} shortly. Would you like to schedule a specific time?`,
+          buttons: ['Yes, schedule call', 'No, just send info']
+        };
+      } else if (!userData.name) {
+        setUserData(prev => ({ ...prev, name: userInput }));
+        botResponse = {
+          text: `Nice to meet you, ${userInput}! Please provide your email:`
+        };
+      }
     }
+    
+    setMessages(prev => [...prev, { ...botResponse, sender: 'bot' }]);
+  };
+
+  const handleSubmitData = () => {
+    console.log('Submitting user data:', userData);
+    // In a real app, you would send this to your backend API
+    setMessages(prev => [...prev, { 
+      text: "Thank you! Our team will contact you shortly. Have a great day!", 
+      sender: 'bot' 
+    }]);
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isOpen ? (
-        <div className="bg-white shadow-xl rounded-xl w-80 h-[450px] flex flex-col border border-gray-200">
-          <div className="bg-blue-800 text-white p-4 rounded-t-xl flex justify-between items-center">
+        <div className="w-80 h-96 bg-white shadow-xl rounded-lg flex flex-col border border-gray-200">
+          {/* Chat header */}
+          <div className="bg-blue-800 text-white p-3 rounded-t-lg flex justify-between items-center">
             <h3 className="font-bold">Psyche Panacea Assistant</h3>
             <button 
-              onClick={() => setIsOpen(false)} 
+              onClick={() => setIsOpen(false)}
               className="text-white hover:text-gray-200"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
           
-          <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+          {/* Chat messages */}
+          <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
             {messages.map((msg, index) => (
-              <div 
-                key={index} 
-                className={`mb-3 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}
-              >
-                <div 
-                  className={`inline-block px-4 py-2 rounded-lg max-w-[80%] ${
-                    msg.sender === 'user' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-gray-200 text-gray-800'
-                  }`}
-                >
+              <div key={index} className={`mb-4 ${msg.sender === 'user' ? 'text-right' : ''}`}>
+                <div className={`inline-block p-3 rounded-lg max-w-xs ${
+                  msg.sender === 'user' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-200 text-gray-800'
+                }`}>
                   {msg.text}
                 </div>
+                
+                {msg.buttons && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {msg.buttons.map((btn, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleUserMessage(btn, true)}
+                        className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-1 rounded"
+                      >
+                        {btn}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                
+                {msg.inputFields && (
+                  <div className="mt-3">
+                    {msg.inputFields.map((field) => (
+                      <input
+                        key={field}
+                        type={field === 'email' ? 'email' : 'text'}
+                        placeholder={`Enter your ${field}`}
+                        className="w-full p-2 border rounded text-sm mb-2"
+                        onChange={(e) => setUserData(prev => ({ 
+                          ...prev, 
+                          [field]: e.target.value 
+                        }))}
+                      />
+                    ))}
+                    <button
+                      onClick={handleSubmitData}
+                      className="bg-blue-600 text-white px-4 py-1 rounded text-sm"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
-            {isLoading && (
-              <div className="text-left mb-3">
-                <div className="inline-block px-4 py-2 rounded-lg bg-gray-200 text-gray-800">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-75"></div>
-                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-150"></div>
-                  </div>
-                </div>
-              </div>
-            )}
             <div ref={messagesEndRef} />
           </div>
           
-          <form onSubmit={handleSubmit} className="border-t p-3">
-            <div className="flex">
+          {/* Input area */}
+          <div className="p-3 border-t">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                const input = e.target.message.value.trim();
+                if (input) handleUserMessage(input);
+                e.target.reset();
+              }}
+              className="flex"
+            >
               <input
+                name="message"
                 type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 px-3 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={isLoading}
+                className="flex-1 border rounded-l p-2 text-sm"
               />
               <button 
                 type="submit"
-                className="bg-blue-800 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 disabled:opacity-50"
-                disabled={isLoading || !inputValue.trim()}
+                className="bg-blue-600 text-white px-4 rounded-r"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                </svg>
+                Send
               </button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       ) : (
         <button 
           onClick={() => setIsOpen(true)}
-          className="bg-blue-800 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all"
+          className="bg-blue-800 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center animate-bounce"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
           </svg>
         </button>
