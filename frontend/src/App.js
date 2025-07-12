@@ -1,5 +1,5 @@
 // src/App.js
-import Chatbot from './components/Chatbot';
+import Chatbot from './components/chatbot';
 
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
