@@ -1,22 +1,24 @@
 // src/App.js
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import ServicesPage from './pages/ServicesPage';
-import Programs from './pages/Programs'; // Add this
-import Events from './pages/Events'; // Add this
-import Gallery from './pages/Gallery'; // Add this
-import AboutPage from './pages/AboutPage'; // Add this
-import ContactPage from './pages/ContactPage';
-import Dashboard from './pages/Dashboard';
-import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
+import ProtectedRoute from './components/ProtectedRoute';
+
+// Pages
+import Home from './pages/Home';
+import ServicesPage from './pages/ServicesPage';
+import Programs from './pages/Programs';
+import Events from './pages/Events';
+import Gallery from './pages/Gallery';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import Dashboard from './pages/Dashboard';
 
 function App() {
-  const [authModalOpen, setAuthModalOpen] = React.useState(false);
-  const [authMode, setAuthMode] = React.useState('signup'); // 'signup' or 'login'
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('signup'); // 'signup' or 'login'
 
   const handleAuthOpen = (mode) => {
     setAuthMode(mode);
@@ -37,20 +39,16 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<ServicesPage />} />
-            {/* Add these new routes */}
             <Route path="/programs" element={<Programs />} />
             <Route path="/events" element={<Events />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } 
-            />
+            
+            {/* Protected Dashboard Route */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
           </Routes>
         </main>
         <Footer />

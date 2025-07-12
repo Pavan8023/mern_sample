@@ -1,7 +1,9 @@
 import React from 'react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
 
-const Programs = () => {
+const Programs = ({ onAuthOpen }) => {
   const programs = [
     {
       id: 1,
@@ -24,7 +26,9 @@ const Programs = () => {
   ];
 
   return (
-    <div className="min-h-screen pt-16 bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen flex flex-col">
+      <Navbar onAuthOpen={onAuthOpen} />
+
       {/* Hero Section */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
@@ -46,6 +50,7 @@ const Programs = () => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => onAuthOpen && onAuthOpen('signup')} // ✅ Triggers auth modal
           className="mt-8 bg-white text-blue-800 px-6 py-3 rounded-full font-semibold text-lg"
         >
           Call Us → Get Started
@@ -53,7 +58,7 @@ const Programs = () => {
       </motion.div>
 
       {/* Programs Grid */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div className="max-w-7xl mx-auto px-4 py-16 flex-grow">
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -85,6 +90,8 @@ const Programs = () => {
           ))}
         </motion.div>
       </div>
+
+      <Footer />
     </div>
   );
 };

@@ -100,7 +100,6 @@ const AboutPage = ({ onAuthOpen }) => {
         </div>
       </section>
       
-      <Footer />
     </div>
   );
 };

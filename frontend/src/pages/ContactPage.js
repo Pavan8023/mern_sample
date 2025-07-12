@@ -34,8 +34,8 @@ const ContactPage = ({ onAuthOpen }) => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Headquarters</h3>
-                    <p className="text-gray-600">123 Training Center, New Delhi, India</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Office</h3>
+                    <p className="text-gray-600">Psyche Panacea, 308/2, Near Country inn Hotel, Sector 12 A, Gurgaon</p>
                   </div>
                 </div>
                 
@@ -59,20 +59,7 @@ const ContactPage = ({ onAuthOpen }) => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
-                    <p className="text-gray-600">hr@programconsulting.com</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="bg-blue-800 rounded-full p-3 mr-4">
-                    <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Business Hours</h3>
-                    <p className="text-gray-600">Monday - Friday: 9AM - 6PM</p>
-                    <p className="text-gray-600">Saturday: 10AM - 4PM</p>
+                    <p className="text-gray-600">hr@psypanconsulting.com</p>
                   </div>
                 </div>
               </div>
@@ -84,8 +71,6 @@ const ContactPage = ({ onAuthOpen }) => {
           </div>
         </div>
       </section>
-      
-      <Footer />
     </div>
   );
 };
