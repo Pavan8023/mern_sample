@@ -6,7 +6,7 @@ const Events = () => {
   const events = [
     {
       id: 1,
-      title: 'Annual Leadership Summit',
+      title: 'Partnership Summit',
       date: '15 July 2025',
       location: 'New Delhi'
     },
@@ -14,7 +14,7 @@ const Events = () => {
       id: 2,
       title: 'Corporate Wellness Workshop',
       date: '28 August 2025',
-      location: 'Mumbai'
+      location: 'Pume'
     },
     {
       id: 3,

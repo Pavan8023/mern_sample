@@ -6,47 +6,47 @@ import { motion } from 'framer-motion';
 const imageList = [
   {
     id: 1,
-    src: 'https://via.placeholder.com/600x400?text=Event+1',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipPdF1ULFTSxiU3RGFURn1ZCDKt8tsPdg-nNNDNy=s1360-w1360-h1020-rw',
     category: 'Event'
   },
   {
     id: 2,
-    src: 'https://via.placeholder.com/600x400?text=Training+2',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipPEd7dmKqNr1IJkY3-x4EqnrGLNcU1DRPY3WO7n=s1360-w1360-h1020-rw',
     category: 'Training'
   },
   {
     id: 3,
-    src: 'https://via.placeholder.com/600x400?text=Workshop+3',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipPiWvOttoiP2Kk2Wl2g_7ezxfQr-WO5CPbYZJku=s1360-w1360-h1020-rw',
     category: 'Workshop'
   },
   {
     id: 4,
-    src: 'https://via.placeholder.com/600x400?text=Event+4',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipMKn8P7o5UeKgF9ld564MgpX9Asd8pf48GCX-rS=s1360-w1360-h1020-rw',
     category: 'Event'
   },
   {
     id: 5,
-    src: 'https://via.placeholder.com/600x400?text=Training+5',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipNbVxi5gDs_jmFTuPJE5tFTkk0pmcW3pCHPPTQ0=s1360-w1360-h1020-rw',
     category: 'Training'
   },
   {
     id: 6,
-    src: 'https://via.placeholder.com/600x400?text=Workshop+6',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipNm6iAbBZJ5jCTgcZFO5CGj2pw3WhgRMoath0D-=s1360-w1360-h1020-rw',
     category: 'Workshop'
   },
   {
     id: 7,
-    src: 'https://via.placeholder.com/600x400?text=Event+7',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipNSPrL5WgfED0z2hro403kmlUh5Gwso5q6ocbOw=s1360-w1360-h1020-rw',
     category: 'Event'
   },
   {
     id: 8,
-    src: 'https://via.placeholder.com/600x400?text=Training+8',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipP687T_DpEulzu8F3LZrjVyMJdxNmqweaKH5pPn=s1360-w1360-h1020-rw',
     category: 'Training'
   },
   {
     id: 9,
-    src: 'https://via.placeholder.com/600x400?text=Workshop+9',
+    src: 'https://lh3.googleusercontent.com/p/AF1QipPPcggonFMh3r1HwA3qZxOd7w0UtV0VXkaObqaY=s1360-w1360-h1020-rw',
     category: 'Workshop'
   },
 ];
