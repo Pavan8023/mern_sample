@@ -1,28 +1,23 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
-  name: {
+const UserSchema = new mongoose.Schema({
+  username: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    unique: true
   },
   email: {
     type: String,
     required: true,
-    unique: true
-  },
-  username: {
-    type: String,
-    // Remove the problematic default function
-    default: 'user' + Math.floor(Math.random() * 10000)
+    unique: true,
+    lowercase: true,
+    trim: true
   },
   password: {
     type: String,
     required: true
-  },
-  role: {
-    type: String,
-    default: 'user',
-    enum: ['user', 'admin']
   },
   createdAt: {
     type: Date,
@@ -30,16 +25,22 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// Add pre-save hook to generate username if not provided
-userSchema.pre('save', function(next) {
-  if (!this.username || this.username.startsWith('user')) {
-    if (this.email) {
-      this.username = this.email.split('@')[0] + Math.floor(Math.random() * 1000);
-    } else {
-      this.username = 'user' + Math.floor(Math.random() * 10000);
-    }
+// Hash password before saving
+UserSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
   }
-  next();
 });
 
-module.exports = mongoose.model('User', userSchema);
+// Compare password method
+UserSchema.methods.comparePassword = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+module.exports = mongoose.model('User', UserSchema);
