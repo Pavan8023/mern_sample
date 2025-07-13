@@ -15,9 +15,15 @@ const SignupForm = ({ switchToLogin }) => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: '' });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error for this field when user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+    if (errors.submit) {
+      setErrors(prev => ({ ...prev, submit: '' }));
     }
   };
 
@@ -57,15 +63,19 @@ const SignupForm = ({ switchToLogin }) => {
     
     try {
       setIsLoading(true);
+      setErrors({});
       
       const apiUrl = process.env.REACT_APP_API_URL || 'https://mern-sample-uw4k.onrender.com';
       
       const response = await axios.post(
         `${apiUrl}/api/auth/signup`,
         {
-          username: formData.username,  // Changed to match DB field
+          username: formData.username,
           email: formData.email,
           password: formData.password
+        },
+        {
+          timeout: 10000 // 10-second timeout
         }
       );
 
@@ -82,18 +92,40 @@ const SignupForm = ({ switchToLogin }) => {
       
     } catch (error) {
       let errorMessage = 'Signup failed. Please try again.';
+      let fieldErrors = {};
       
       if (error.response) {
+        // Handle backend validation errors
         if (error.response.status === 400) {
           errorMessage = error.response.data.message || 'Validation error';
-        } else if (error.response.status === 409) {
-          errorMessage = 'Email already exists';
+          
+          // Map backend errors to fields
+          if (error.response.data.errors) {
+            error.response.data.errors.forEach(err => {
+              fieldErrors[err.path] = err.msg;
+            });
+          }
+        } 
+        // Handle conflict errors
+        else if (error.response.status === 409) {
+          if (error.response.data.message.includes('email')) {
+            fieldErrors.email = 'Email already exists';
+          } else if (error.response.data.message.includes('username')) {
+            fieldErrors.username = 'Username already taken';
+          }
         }
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Request timed out. Please try again.';
       } else if (error.request) {
         errorMessage = 'No response from server. Please check your connection.';
+      } else {
+        errorMessage = error.message || 'Request setup error';
       }
       
-      setErrors({ submit: errorMessage });
+      setErrors({
+        ...fieldErrors,
+        submit: fieldErrors.email || fieldErrors.username ? '' : errorMessage
+      });
     } finally {
       setIsLoading(false);
     }
@@ -116,52 +148,60 @@ const SignupForm = ({ switchToLogin }) => {
           )}
           
           <div>
-            <label className="block text-gray-700 mb-2">Username</label>
+            <label className="block text-gray-700 mb-2">Username *</label>
             <input
               type="text"
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg ${errors.username ? 'border-red-500' : 'border-gray-300'}`}
+              className={`w-full p-3 border rounded-lg ${
+                errors.username ? 'border-red-500' : 'border-gray-300 focus:border-blue-600'
+              }`}
               placeholder="Choose a username"
             />
             {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
           </div>
           
           <div>
-            <label className="block text-gray-700 mb-2">Email</label>
+            <label className="block text-gray-700 mb-2">Email *</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+              className={`w-full p-3 border rounded-lg ${
+                errors.email ? 'border-red-500' : 'border-gray-300 focus:border-blue-600'
+              }`}
               placeholder="your@email.com"
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
           
           <div>
-            <label className="block text-gray-700 mb-2">Password</label>
+            <label className="block text-gray-700 mb-2">Password *</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+              className={`w-full p-3 border rounded-lg ${
+                errors.password ? 'border-red-500' : 'border-gray-300 focus:border-blue-600'
+              }`}
               placeholder="At least 6 characters"
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
           
           <div>
-            <label className="block text-gray-700 mb-2">Confirm Password</label>
+            <label className="block text-gray-700 mb-2">Confirm Password *</label>
             <input
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
+              className={`w-full p-3 border rounded-lg ${
+                errors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-blue-600'
+              }`}
               placeholder="Confirm your password"
             />
             {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
@@ -190,7 +230,10 @@ const SignupForm = ({ switchToLogin }) => {
               <button 
                 type="button"
                 className="text-blue-600 hover:underline font-medium"
-                onClick={switchToLogin}
+                onClick={() => {
+                  setErrors({});
+                  switchToLogin();
+                }}
               >
                 Log in
               </button>
