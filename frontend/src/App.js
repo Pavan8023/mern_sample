@@ -4,6 +4,8 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import ProtectedRoute from './components/ProtectedRoute';
+import LoginForm from './components/LoginForm';
+
 import Chatbot from './pages/Chatbot';
 
 // Pages
