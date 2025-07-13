@@ -89,12 +89,12 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
         localStorage.setItem('user', JSON.stringify(response.data.user));
         localStorage.setItem('token', response.data.token);
         
-        setSuccessMessage('Account created successfully! Redirecting to dashboard...');
+        setSuccessMessage('Account created successfully! Redirecting to Login...');
         
         // Close modal and redirect to dashboard after delay
         setTimeout(() => {
           onClose();
-          navigate('/dashboard');
+          navigate('/login');
         }, 1500);
       } else {
         // LOGIN PROCESS
