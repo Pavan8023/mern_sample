@@ -46,6 +46,7 @@ function App() {
             <Route path="/gallery" element={<Gallery onAuthOpen={handleAuthOpen} />} />
             <Route path="/about" element={<AboutPage onAuthOpen={handleAuthOpen} />} />
             <Route path="/contact" element={<ContactPage onAuthOpen={handleAuthOpen} />} />
+            <Route path="/login" element={<LoginForm switchToSignup={() => setAuthMode('signup')} />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
