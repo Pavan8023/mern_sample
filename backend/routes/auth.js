@@ -17,13 +17,13 @@ router.post('/signup', async (req, res) => {
     const normalizedEmail = email.toLowerCase().trim();
 
     // Check if user exists by email or username
-    const existingUser = await User.findOne({ 
+    const existingUser = await User.findOne({
       $or: [
         { email: normalizedEmail },
         { username }
       ]
     });
-    
+
     if (existingUser) {
       if (existingUser.email === normalizedEmail) {
         return res.status(409).json({ message: 'Email already exists' });
@@ -50,11 +50,11 @@ router.post('/signup', async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    // Return user without password
     const userData = {
       _id: user._id,
       username: user.username,
       email: user.email,
+      role: user.role, // ADD THIS LINE
       createdAt: user.createdAt
     };
 
@@ -66,15 +66,15 @@ router.post('/signup', async (req, res) => {
 
   } catch (error) {
     console.error('Signup error:', error);
-    
+
     let errorMessage = 'Server error';
     if (error.name === 'ValidationError') {
       errorMessage = Object.values(error.errors).map(val => val.message).join(', ');
     } else if (error.code === 11000) {
       errorMessage = 'Duplicate field value entered';
     }
-    
-    res.status(500).json({ 
+
+    res.status(500).json({
       message: errorMessage,
       error: error.message
     });
@@ -88,7 +88,7 @@ router.post('/login', async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
-    
+
     const normalizedEmail = email.toLowerCase().trim();
 
     // Find user by email
@@ -110,23 +110,24 @@ router.post('/login', async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    // Prepare user data without password
+    // In login route
     const userData = {
       _id: user._id,
       username: user.username,
       email: user.email,
+      role: user.role, // ADD THIS LINE
       createdAt: user.createdAt
     };
 
-    res.status(200).json({ 
-      token, 
+    res.status(200).json({
+      token,
       user: userData,
       message: 'Login successful'
     });
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Server error',
       error: error.message
     });
