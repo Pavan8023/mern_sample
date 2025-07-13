@@ -14,7 +14,7 @@ const AboutPage = ({ onAuthOpen }) => {
   return (
     <div className="min-h-screen bg-white">
       <Navbar onAuthOpen={onAuthOpen} />
-      
+
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-800 to-blue-600 text-white pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,7 +24,7 @@ const AboutPage = ({ onAuthOpen }) => {
           </p>
         </div>
       </div>
-      
+
       {/* About Content */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +37,7 @@ const AboutPage = ({ onAuthOpen }) => {
               <p className="text-gray-700 mb-6">
                 With the ability to anticipate challenges, Psyche Panacea is always ready when our clients need us.
               </p>
-              
+
               <div className="space-y-8">
                 <div className="flex items-start">
                   <div className="bg-blue-800 rounded-full p-3 mr-4">
@@ -50,7 +50,7 @@ const AboutPage = ({ onAuthOpen }) => {
                     <p className="text-gray-600">We have trained over 3,00,000 employees.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="bg-blue-800 rounded-full p-3 mr-4">
                     <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,17 +64,25 @@ const AboutPage = ({ onAuthOpen }) => {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex justify-center">
-              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-96" />
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-96 overflow-hidden">
+                <img
+                  src="/img/psyche.webp"
+                  alt="Gallery Preview"
+                  className="w-full h-full object-cover"
+                />
+
+              </div>
             </div>
+
           </div>
         </div>
       </section>
-      
+
       {/* Experience Section */}
       <Experience />
-      
+
       {/* Clients Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,7 +92,7 @@ const AboutPage = ({ onAuthOpen }) => {
               Trusted by leading organizations across industries
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
             {clients.map((client, index) => (
               <div key={index} className="bg-white p-6 rounded-lg shadow-sm text-center">
@@ -98,7 +106,7 @@ const AboutPage = ({ onAuthOpen }) => {
           </div>
         </div>
       </section>
-      
+
     </div>
   );
 };
