@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SignupForm = ({ switchToLogin }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -24,10 +24,10 @@ const SignupForm = ({ switchToLogin }) => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    } else if (formData.name.length < 3) {
-      newErrors.name = 'Name must be at least 3 characters';
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
     }
     
     if (!formData.email.trim()) {
@@ -63,7 +63,7 @@ const SignupForm = ({ switchToLogin }) => {
       const response = await axios.post(
         `${apiUrl}/api/auth/signup`,
         {
-          name: formData.name,
+          username: formData.username,  // Changed to match DB field
           email: formData.email,
           password: formData.password
         }
@@ -73,12 +73,12 @@ const SignupForm = ({ switchToLogin }) => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
-      setSuccessMessage('Account created successfully! Redirecting...');
+      setSuccessMessage('Account created successfully! Redirecting to dashboard...');
       
-      // Redirect to dashboard after 2 seconds
+      // Redirect to dashboard after 1.5 seconds
       setTimeout(() => {
         navigate('/dashboard');
-      }, 2000);
+      }, 1500);
       
     } catch (error) {
       let errorMessage = 'Signup failed. Please try again.';
@@ -116,16 +116,16 @@ const SignupForm = ({ switchToLogin }) => {
           )}
           
           <div>
-            <label className="block text-gray-700 mb-2">Full Name</label>
+            <label className="block text-gray-700 mb-2">Username</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="username"
+              value={formData.username}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="Enter your full name"
+              className={`w-full p-3 border rounded-lg ${errors.username ? 'border-red-500' : 'border-gray-300'}`}
+              placeholder="Choose a username"
             />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+            {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
           </div>
           
           <div>

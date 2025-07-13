@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -18,7 +18,7 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
   useEffect(() => {
     if (!isOpen) {
       setFormData({
-        name: '',
+        username: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -41,10 +41,10 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
     const newErrors = {};
     
     if (mode === 'signup') {
-      if (!formData.name.trim()) {
-        newErrors.name = 'Full name is required';
-      } else if (formData.name.length < 3) {
-        newErrors.name = 'Name must be at least 3 characters';
+      if (!formData.username.trim()) {
+        newErrors.username = 'Username is required';
+      } else if (formData.username.length < 3) {
+        newErrors.username = 'Username must be at least 3 characters';
       }
     }
     
@@ -80,7 +80,7 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
       
       if (mode === 'signup') {
         const response = await axios.post(`${apiUrl}/api/auth/signup`, {
-          name: formData.name,
+          username: formData.username,  // Changed to match DB field
           email: formData.email,
           password: formData.password
         });
@@ -183,18 +183,18 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
           <form onSubmit={handleSubmit}>
             {mode === 'signup' && (
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Full Name *</label>
+                <label className="block text-gray-700 mb-2">Username *</label>
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="username"
+                  value={formData.username}
                   onChange={handleChange}
                   className={`w-full px-4 py-2 border rounded-md ${
-                    errors.name ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
+                    errors.username ? 'border-red-500' : 'border-gray-300 focus:border-blue-800'
                   }`}
-                  placeholder="Enter your full name"
+                  placeholder="Choose a username"
                 />
-                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
               </div>
             )}
             
