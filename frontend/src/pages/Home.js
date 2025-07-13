@@ -5,7 +5,6 @@ import About from '../components/About';
 import Services from '../components/Services';
 import Experience from '../components/Experience';
 import ContactForm from '../components/ContactForm';
-import Footer from '../components/Footer';
 
 const Home = ({ onAuthOpen }) => {
   return (
