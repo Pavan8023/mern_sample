@@ -56,8 +56,6 @@ const Home = ({ onAuthOpen }) => {
           </div>
         </div>
       </section>
-      
-      <Footer />
     </div>
   );
 };

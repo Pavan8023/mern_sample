@@ -90,8 +90,6 @@ const Programs = ({ onAuthOpen }) => {
           ))}
         </motion.div>
       </div>
-
-      <Footer />
     </div>
   );
 };
