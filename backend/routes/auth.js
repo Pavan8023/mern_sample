@@ -23,7 +23,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -69,11 +69,12 @@ router.post('/signup', async (req, res) => {
     if (user) {
       return res.status(409).json({ message: 'User already exists' });
     }
-    
+
+    // Create user with hashed password
     user = new User({
       name,
       email: normalizedEmail,
-      password
+      password // Will be hashed by pre-save hook
     });
 
     // Save user to database

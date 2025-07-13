@@ -1,4 +1,4 @@
-require('dotenv').config({ path: __dirname + '/.env' });
+require('dotenv').config();
 
 console.log('Environment Variables:');
 console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set!');
@@ -8,7 +8,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
-const contactRoutes = require('./routes/contact');
 
 const app = express();
 
@@ -24,7 +23,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// MongoDB Connection with improved settings
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -37,13 +36,16 @@ mongoose.connect(process.env.MONGO_URI, {
   process.exit(1);
 });
 
+mongoose.connection.on('connected', () => {
+  console.log('MongoDB connected to database:', mongoose.connection.db.databaseName);
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/contact', contactRoutes);
 
 // Test route
 app.get('/', (req, res) => {
-  res.send('Psyche Panacea Backend is running');
+  res.send('Authentication Backend is running');
 });
 
 // Health check endpoint
