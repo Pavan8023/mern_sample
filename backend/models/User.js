@@ -1,6 +1,4 @@
-// backend/models/User.js
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -10,15 +8,12 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
-    trim: true,
-    lowercase: true
+    unique: true
   },
   username: {
     type: String,
-    default: function() {
-      return this.email.split('@')[0] + Math.floor(Math.random() * 1000);
-    }
+    // Remove the problematic default function
+    default: 'user' + Math.floor(Math.random() * 10000)
   },
   password: {
     type: String,
@@ -28,22 +23,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'user',
     enum: ['user', 'admin']
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-}, {
-  timestamps: true
 });
 
-// Hash password before saving
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
+// Add pre-save hook to generate username if not provided
+userSchema.pre('save', function(next) {
+  if (!this.username || this.username.startsWith('user')) {
+    if (this.email) {
+      this.username = this.email.split('@')[0] + Math.floor(Math.random() * 1000);
+    } else {
+      this.username = 'user' + Math.floor(Math.random() * 10000);
+    }
   }
+  next();
 });
 
 module.exports = mongoose.model('User', userSchema);
