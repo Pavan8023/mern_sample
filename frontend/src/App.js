@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
-import ProtectedRoute from './components/ProtectedRoute';
-import LoginForm from './components/LoginForm';
 
 import Chatbot from './pages/Chatbot';
 
@@ -16,7 +14,6 @@ import Events from './pages/Events';
 import Gallery from './pages/Gallery';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
-import Dashboard from './pages/Dashboard';
 
 function App() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -46,11 +43,7 @@ function App() {
             <Route path="/gallery" element={<Gallery onAuthOpen={handleAuthOpen} />} />
             <Route path="/about" element={<AboutPage onAuthOpen={handleAuthOpen} />} />
             <Route path="/contact" element={<ContactPage onAuthOpen={handleAuthOpen} />} />
-            <Route path="/login" element={<LoginForm switchToSignup={() => setAuthMode('signup')} />} />
 
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
           </Routes>
         </main>
         <Footer />
